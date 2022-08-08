@@ -12,6 +12,20 @@ router.get('/appointments', async (req, res) => {
 	}
 })
 
+router.get('/appointments/user/:userId', async (req, res) => {
+	try {
+		const appts = await Appointment.find({ userId: req.params.userId })
+
+		if (appts.length === 0) {
+			return res.status(404).send()
+		}
+
+		res.send(appts)
+	} catch (e) {
+		res.status(500).send()
+	}
+})
+
 router.get('/appointments/:apptId', async (req, res) => {
 	const _id = req.params.apptId
 

@@ -21,13 +21,13 @@ const apptSchema = new mongoose.Schema({
 	startTime: {
 		type: String,
 		required: false,
-		default: Date.now().toString(),
+		default: new Date().toISOString(),
 		trim: true,
 	},
 	endTime: {
 		type: String,
 		required: false,
-		default: Date.now().toString(),
+		default: new Date().toISOString(),
 		trim: true,
 	},
 	metadata: {
@@ -36,11 +36,11 @@ const apptSchema = new mongoose.Schema({
 		trim: true,
 		default: '',
 	},
-	// owner: {
-	// 	type: mongoose.Schema.Types.ObjectId,
-	// 	required: true,
-	// 	ref: 'User',
-	// },
+	userId: {
+		type: mongoose.Schema.Types.ObjectId,
+		required: true,
+		ref: 'User',
+	},
 })
 
 const Appointment = mongoose.model('Appointment', apptSchema)
