@@ -21,6 +21,7 @@ beforeEach(async () => {
 
 afterAll(async () => {
 	await Appointment.deleteMany({ metadata: 'test' })
+	mongoose.connection.close()
 })
 
 test('Create a new Appointment', async () => {
@@ -45,7 +46,7 @@ test('Find an Appointment by ID', async () => {
 		.get('/appointments/' + testApptId.toString())
 		.expect(200)
 
-	expect(res.body).not.toBeNull()
+	expect(res.body._id.toString()).toEqual(testAppt._id.toString())
 })
 
 test('Does not find non-existing Appointment', async () => {
@@ -61,16 +62,43 @@ test('Finds appointments by userID', async () => {
 		.get('/appointments/user/' + testUserId.toString())
 		.expect(200)
 
-	console.log(res.body)
-	expect(res.body).not.toBeNull()
+	expect(res.body).not.toEqual({})
 })
 
 test('Does not find appointments for non-existant user', async () => {
 	const res = await request(app)
 		.get('/appointments/user/' + new mongoose.Types.ObjectId().toString())
 		.expect(404)
+	expect(res.body).toEqual({})
+})
 
-	console.log(res.body)
+test('Find Appointment by name (search)', async () => {
+	await new Appointment({
+		name: 'Search Me',
+		description: 'search',
+		type: 'test appt',
+		metadata: 'test',
+		userId: testUserId,
+	}).save()
+	const res = await request(app)
+		.get('/appointments/search/' + encodeURIComponent('Search Me'))
+		.expect(200)
+
+	expect(res.body).not.toEqual({})
+})
+
+test("Does not find appointment by name when doesn't exist", async () => {
+	await new Appointment({
+		name: 'Do not find',
+		description: 'search',
+		type: 'test appt',
+		metadata: 'test',
+		userId: testUserId,
+	}).save()
+	const res = await request(app)
+		.get('/appointments/search/' + encodeURIComponent('Search Me'))
+		.expect(404)
+
 	expect(res.body).toEqual({})
 })
 
