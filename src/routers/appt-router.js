@@ -16,8 +16,8 @@ router.get('/appointments/user/:userId', async (req, res) => {
 	try {
 		const apptList = await Appointment.find({ userId: req.params.userId })
 
-		if (apptList.length === 0) {
-			return res.status(404).send()
+		if (appts.length === 0) {
+			return res.status(404).send([])
 		}
 
 		res.send(apptList)
