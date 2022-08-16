@@ -1,5 +1,6 @@
 const express = require('express')
 const Appointment = require('../model/Appointment')
+const mongoose = require('mongoose')
 
 const router = new express.Router()
 
@@ -14,12 +15,13 @@ router.get('/appointments', async (req, res) => {
 
 router.get('/appointments/user/:userId', async (req, res) => {
 	try {
-		const apptList = await Appointment.find({ userId: req.params.userId })
+		const apptList = await Appointment.find({
+			userId: req.params.userId,
+		})
 
-		if (appts.length === 0) {
+		if (apptList.length === 0) {
 			return res.status(404).send([])
 		}
-
 		res.send(apptList)
 	} catch (e) {
 		res.status(500).send()
