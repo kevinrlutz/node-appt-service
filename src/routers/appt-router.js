@@ -14,13 +14,13 @@ router.get('/appointments', async (req, res) => {
 
 router.get('/appointments/user/:userId', async (req, res) => {
 	try {
-		const appts = await Appointment.find({ userId: req.params.userId })
+		const apptList = await Appointment.find({ userId: req.params.userId })
 
 		if (appts.length === 0) {
 			return res.status(404).send([])
 		}
 
-		res.send(appts)
+		res.send(apptList)
 	} catch (e) {
 		res.status(500).send()
 	}
@@ -37,6 +37,22 @@ router.get('/appointments/:apptId', async (req, res) => {
 		}
 
 		res.send(appt)
+	} catch (e) {
+		res.status(500).send()
+	}
+})
+
+router.get('/appointments/search/:apptName', async (req, res) => {
+	const apptName = req.params.apptName
+
+	try {
+		const apptList = await Appointment.find({ name: apptName })
+
+		if (apptList.length === 0) {
+			return res.status(404).send()
+		}
+
+		res.send(apptList)
 	} catch (e) {
 		res.status(500).send()
 	}
