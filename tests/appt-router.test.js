@@ -69,7 +69,7 @@ test('Does not find appointments for non-existant user', async () => {
 	const res = await request(app)
 		.get('/appointments/user/' + new mongoose.Types.ObjectId().toString())
 		.expect(404)
-	expect(res.body).toEqual({})
+	expect(res.body).toEqual([])
 })
 
 test('Find Appointment by name (search)', async () => {
